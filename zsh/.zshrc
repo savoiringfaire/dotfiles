@@ -2,7 +2,7 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-  export ZSH="/home/marcushann/.oh-my-zsh"
+  export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -67,6 +67,7 @@ plugins=(
 )
 
 source $ZSH/oh-my-zsh.sh
+source $HOME/.zshrc.local
 
 # User configuration
 
@@ -97,4 +98,23 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-eval "$(rbenv init -)"
+if [[ -x $(which rbenv) ]]
+then
+    eval "$(rbenv init -)"
+fi
+
+export GOPATH="$HOME/go-workspace"
+export PATH="$PATH:$GOPATH/bin"
+
+setup_go_path() {
+    mkdir -p $GOPATH
+}
+
+fwc() {
+    if [[ -x $(which ag) ]]
+    then
+      ag "${1}"
+    else
+      find . -type f -exec grep -Hn "${1}" {} +
+    fi
+}
