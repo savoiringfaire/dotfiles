@@ -106,6 +106,13 @@ fi
 export GOPATH="$HOME/go-workspace"
 export PATH="$PATH:$GOPATH/bin"
 
+alias gpl="git pull"
+alias gpu="git push"
+if [[ -x $(which ssh-ident) ]]
+then
+  alias ssh="ssh-ident"
+fi
+
 setup_go_path() {
     mkdir -p $GOPATH
 }
@@ -117,4 +124,8 @@ fwc() {
     else
       find . -type f -exec grep -Hn "${1}" {} +
     fi
+}
+
+gcap() {
+  git commit -am "${1}" && git push
 }
