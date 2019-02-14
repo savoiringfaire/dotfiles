@@ -126,13 +126,22 @@ fwc() {
     fi
 }
 
+red=`tput setaf 1`
+green=`tput setaf 2`
+reset=`tput sgr0`
+
 gcap() {
   if [ "${1}" != "--no-add" ]
   then
+    echo "${green}Adding files to git...${reset}"
     git add .
   else
+    echo "${green}Not adding files to git...${reset}"
     shift
   fi
-    
-  git commit -am "${1}" && git push
+
+  echo "${green}Committing to git...${reset}"
+  git commit -am "${1}"
+  echo "${green}Pushing to git...${reset}"
+  git push
 }
