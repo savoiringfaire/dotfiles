@@ -127,5 +127,12 @@ fwc() {
 }
 
 gcap() {
+  if [ "${1}" != "--no-add" ]
+  then
+    git add .
+  else
+    shift
+  fi
+    
   git commit -am "${1}" && git push
 }
