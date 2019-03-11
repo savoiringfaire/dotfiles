@@ -112,9 +112,16 @@ if [[ -x $(which ssh-ident) ]]
 then
   alias ssh="ssh-ident"
 fi
+alias gg="git log --graph --decorate --pretty=oneline --abbrev-commit"
 
 setup_go_path() {
     mkdir -p $GOPATH
+}
+
+init_git_repo() {
+  git init
+  git add .
+  git commit -m "$1"
 }
 
 fwc() {
@@ -145,3 +152,15 @@ gcap() {
   echo "${green}Pushing to git...${reset}"
   git push
 }
+
+jtail() {
+  unit_argument=""
+  if [[ $# -ne 0 ]]; then
+    unit_argument="-u"
+  fi
+
+  journalctl -f $unit_argument $1
+}
+
+# added by travis gem
+[ -f /home/ms/.travis/travis.sh ] && source /home/ms/.travis/travis.sh
