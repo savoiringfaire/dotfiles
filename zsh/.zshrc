@@ -164,3 +164,6 @@ jtail() {
 
 # added by travis gem
 [ -f /home/ms/.travis/travis.sh ] && source /home/ms/.travis/travis.sh
+
+# Internal PC's
+alias sclara="ssh 10.20.0.19"
