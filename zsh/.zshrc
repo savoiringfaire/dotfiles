@@ -170,3 +170,63 @@ jtail() {
 
 # Internal PC's
 alias sclara="ssh 10.20.0.19"
+
+sshkeycopy() {
+  unameOut="$(uname -s)"
+  case "${unameOut}" in
+    Linux*)     machine=Linux;;
+    Darwin*)    machine=Mac;;
+    CYGWIN*)    machine=Cygwin;;
+    MINGW*)     machine=MinGw;;
+    *)          machine="UNKNOWN:${unameOut}"
+  esac
+
+  if [[ "${machine}" == "Linux" ]]; then
+    copyCommand="xclip -selection c"
+  elif [[ "${machine}" == "Mac" ]]; then
+    copyCommand="pbcopy"
+  else
+    echo "SSH Key copy for ${machine} not yet implemented"
+    return
+  fi
+
+  cat ~/.ssh/id_rsa.pub | ${copyCommand}
+}
+
+gpgkeycopy() {
+  unameOut="$(uname -s)"
+  case "${unameOut}" in
+    Linux*)     machine=Linux;;
+    Darwin*)    machine=Mac;;
+    CYGWIN*)    machine=Cygwin;;
+    MINGW*)     machine=MinGw;;
+    *)          machine="UNKNOWN:${unameOut}"
+  esac
+
+  if [[ "${machine}" == "Linux" ]]; then
+    copyCommand="xclip -selection c"
+  elif [[ "${machine}" == "Mac" ]]; then
+    copyCommand="pbcopy"
+  else
+    echo "SSH Key copy for ${machine} not yet implemented"
+    return
+  fi
+
+  if [[ "${1}" == "" ]]; then
+    echo "You must pass the email address of the key as the first argument"
+    return
+  fi
+
+  gpg --armor --export ${1} | ${copyCommand}
+}
+
+scw() {
+  number="$1"
+
+  open "https://www.shellcheck.net/wiki/SC${number}"
+}
+
+
+# Added by serverless binary installer
+export PATH="$HOME/.serverless/bin:$PATH"
+export PATH="/usr/local/opt/terraform@0.12/bin:$PATH"
