@@ -86,6 +86,8 @@ fi
 #   export EDITOR='mvim'
 # fi
 
+EDITOR='emacs'
+
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
