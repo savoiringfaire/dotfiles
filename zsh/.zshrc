@@ -1,3 +1,5 @@
+source ~/powerlevel10k/powerlevel10k.zsh-theme
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -9,7 +11,7 @@ fi
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/home/marcus/.oh-my-zsh"
+  export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -81,6 +83,10 @@ plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
 
+if [ -z $HOME/.zshrc.local ]; then
+  source $HOME/.zshrc.local
+fi
+
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"
@@ -95,7 +101,7 @@ source $ZSH/oh-my-zsh.sh
 #   export EDITOR='mvim'
 # fi
 
-EDITOR='emacs'
+EDITOR='nvim'
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -111,3 +117,151 @@ EDITOR='emacs'
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+if [[ -x $(which rbenv) ]]
+then
+    eval "$(rbenv init -)"
+fi
+
+export GOPATH="$HOME/go-workspace"
+export PATH="$PATH:$GOPATH/bin"
+
+alias gpl="git pull"
+alias gpu="git push"
+if [[ -x $(which ssh-ident) ]]
+then
+  alias ssh="ssh-ident"
+fi
+alias gg="git log --graph --decorate --pretty=oneline --abbrev-commit"
+
+setup_go_path() {
+    mkdir -p $GOPATH
+}
+
+init_git_repo() {
+  git init
+  git add .
+  git commit -m "$1"
+}
+
+fwc() {
+    if [[ -x $(which ag) ]]
+    then
+      ag "${1}"
+    else
+      find . -type f -exec grep -Hn "${1}" {} +
+    fi
+}
+
+red=`tput setaf 1`
+green=`tput setaf 2`
+reset=`tput sgr0`
+
+gcap() {
+  if [ "${1}" != "--no-add" ]
+  then
+    echo "${green}Adding files to git...${reset}"
+    git add .
+  else
+    echo "${green}Not adding files to git...${reset}"
+    shift
+  fi
+
+  echo "${green}Committing to git...${reset}"
+  git commit -am "${1}"
+  echo "${green}Pushing to git...${reset}"
+  git push
+}
+
+jtail() {
+  unit_argument=""
+  if [[ $# -ne 0 ]]; then
+    unit_argument="-u"
+  fi
+
+  journalctl -f $unit_argument $1
+}
+
+# added by travis gem
+[ -f /home/ms/.travis/travis.sh ] && source /home/ms/.travis/travis.sh
+
+# Internal PC's
+alias sclara="ssh 10.20.0.19"
+
+sshkeycopy() {
+  unameOut="$(uname -s)"
+  case "${unameOut}" in
+    Linux*)     machine=Linux;;
+    Darwin*)    machine=Mac;;
+    CYGWIN*)    machine=Cygwin;;
+    MINGW*)     machine=MinGw;;
+    *)          machine="UNKNOWN:${unameOut}"
+  esac
+
+  if [[ "${machine}" == "Linux" ]]; then
+    copyCommand="xclip -selection c"
+  elif [[ "${machine}" == "Mac" ]]; then
+    copyCommand="pbcopy"
+  else
+    echo "SSH Key copy for ${machine} not yet implemented"
+    return
+  fi
+
+  cat ~/.ssh/id_rsa.pub | ${copyCommand}
+}
+
+gpgkeycopy() {
+  unameOut="$(uname -s)"
+  case "${unameOut}" in
+    Linux*)     machine=Linux;;
+    Darwin*)    machine=Mac;;
+    CYGWIN*)    machine=Cygwin;;
+    MINGW*)     machine=MinGw;;
+    *)          machine="UNKNOWN:${unameOut}"
+  esac
+
+  if [[ "${machine}" == "Linux" ]]; then
+    copyCommand="xclip -selection c"
+  elif [[ "${machine}" == "Mac" ]]; then
+    copyCommand="pbcopy"
+  else
+    echo "SSH Key copy for ${machine} not yet implemented"
+    return
+  fi
+
+  if [[ "${1}" == "" ]]; then
+    echo "You must pass the email address of the key as the first argument"
+    return
+  fi
+
+  gpg --armor --export ${1} | ${copyCommand}
+}
+
+scw() {
+  number="$1"
+
+  open "https://www.shellcheck.net/wiki/SC${number}"
+}
+
+
+# Added by serverless binary installer
+export PATH="$HOME/.serverless/bin:$PATH"
+
+export PATH="/usr/local/opt/terraform@0.12/bin:$PATH"
+
+if [[ "$(uname -s)" == "Darwin" ]]; then
+  # Secretive Config
+  export SSH_AUTH_SOCK=/Users/marcus.hann/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh
+fi
+
+eval "$(logcli --completion-script-zsh)"
+
+if [[ -d "${HOME}/.nvm" ]]; then
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+fi
+
+alias exa="exa -lah"
+
+alias vim="nvim"

@@ -8,3 +8,13 @@ alias yeet="git push"
 function htheader() {
   http --follow -h --all "$@" Fastly-Debug:1
 }
+
+alias aww="aws2-wrap --profile "
+
+function awwt() {
+  profile="${1}"
+  shift
+  aww ${profile} terraform ${@}
+}
+
+alias export_npm_token="export NPM_TOKEN=\"$(cat ~/.npmrc | cut -d '=' -f2)\""
